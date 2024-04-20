@@ -7,8 +7,8 @@ setup(
         CUDAExtension(
             "softmax_cuda",
             [
-                "src/softmax.cpp",
-                "src/softmax_kernel.cu",
+                "csrc/softmax.cpp",
+                "csrc/softmax_kernel.cu",
             ],
             extra_compile_args={
                 "cxx": ["-O3"],
@@ -17,6 +17,7 @@ setup(
                     "--use_fast_math",
                     "-gencode",
                     "arch=compute_80,code=sm_80",
+                    "-I csrc/include/kernels"
                 ],
             },
         ),

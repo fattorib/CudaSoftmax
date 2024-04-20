@@ -47,7 +47,7 @@ int main(void) {
              cudaMemcpyHostToDevice);
 
   const int numThread = 128; // makes sense to think about this as # of warps
-                            // since we are doing warp reductions
+                             // since we are doing warp reductions
 
   dim3 blockDim(numThread);
 
@@ -58,12 +58,13 @@ int main(void) {
 
   int bytesBlock = sizeof(float) * numCols;
 
-  cudaFuncSetAttribute(softmax<numCols, numThread>,
+  cudaFuncSetAttribute(softmax_kernel<numCols, numThread>,
                        cudaFuncAttributeMaxDynamicSharedMemorySize, bytesBlock);
 
   std::cout << "Warmup started" << std::endl;
   for (int i = 0; i < warmup_iters; i++) {
-    softmax<numCols, numThread><<<gridDim, blockDim, bytesBlock>>>(d_in, d_out);
+    softmax_kernel<numCols, numThread>
+        <<<gridDim, blockDim, bytesBlock>>>(d_in, d_out);
   }
 
   cudaDeviceSynchronize();
@@ -76,7 +77,8 @@ int main(void) {
   std::cout << "Benchmark started" << std::endl;
   cudaEventRecord(start);
   for (int i = 0; i < benchmark_iters; i++) {
-    softmax<numCols, numThread><<<gridDim, blockDim, bytesBlock>>>(d_in, d_out);
+    softmax_kernel<numCols, numThread>
+        <<<gridDim, blockDim, bytesBlock>>>(d_in, d_out);
   }
 
   cudaEventRecord(stop);
