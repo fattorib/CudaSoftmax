@@ -14,7 +14,7 @@ python3 setup.py install
 import torch
 from softmax_cuda import fusedSoftmax
 
-# create random f32 tensor -> only single precision and 2D are supported!
+# create random f32 tensor -> only single precision and 2D tensors are supported!
 x = torch.randn((6144, 8192), device = 'cuda:0', dtype = torch.float32)
 out = fusedSoftmax(x)
 ```
@@ -23,7 +23,7 @@ out = fusedSoftmax(x)
 
 You can also build the standalone CUDA kernel with [^1]:
 ```bash
-nvcc -std=c++17 -I include/ softmax_cuda.cu -o softmax_cuda.bin
+make gpu
 ```
 This script performs benchmarking and tests for correctness against an (unoptimized) CPU implementation.
 
@@ -32,7 +32,7 @@ Once compiled, run with:
 ./softmax_cuda.bin 
 ```
 
-expected output is:
+expected output should be similar to:
 ```bash
 Warmup started
 Benchmark started
